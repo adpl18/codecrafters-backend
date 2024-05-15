@@ -15,17 +15,17 @@ app.use(cors());
 router.get('/', (ctx) => {
     ctx.status = 200;
     ctx.body = 'Hello World';
-  });
+});
   
-  // Use the router routes
-  app.use(router.routes());
-  app.use(router.allowedMethods());
-  
-  // Set the port
-  const PORT = process.env.PORT || 8000;
-  
-  // Start the server
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+// Use the router routes
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+// Set the port
+const PORT = process.env.PORT || 8000;
+
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on port ${PORT}`);
+});
   
