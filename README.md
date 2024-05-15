@@ -57,5 +57,12 @@ docker-compose logs postgres
 $ docker-compose up -d
 $ docker ps
 $ docker exec -it <CONTAINER ID Postgres> bash
-$ psql mecanu postgres
+$ psql desarrollo postgres
+```
+-General version
+```bash
+$ docker-compose up -d
+$ docker ps
+$ docker exec -it <CONTAINER ID Postgres> bash
+$ psql <DB> postgres
 ```
