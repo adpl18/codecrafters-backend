@@ -18,8 +18,11 @@
   "homepage": "https://github.com/adpl18/codecrafters-backend#readme",
   "dependencies": {
     "@koa/cors": "^5.0.0",
+    "dotenv": "^16.4.5",
     "koa": "^2.15.3",
     "koa-bodyparser": "^4.4.1",
-    "koa-router": "^12.0.1"
+    "koa-router": "^12.0.1",
+    "pg": "^8.11.5",
+    "sequelize": "^6.37.3"
   }
 }
