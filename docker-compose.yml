@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    env_file: ./.env
+    build: .
+    ports:
+      - "8000:8000" 
+    environment:
+      POSTGRES_HOST: postgres:$PSQL_PASSWORD@postgres:5433
+      PORT: $NODEJS_LOCAL_PORT
+    depends_on:
+    - postgres
+
+  postgres:
+    env_file: ./.env
+    container_name: $CONTAINER_NAME_PSQL
+    restart: always
+    image: postgres
+    ports:
+      - $PSQL_PORT:$PSQL_PORT
+    environment:
+      POSTGRES_PASSWORD: $PSQL_PASSWORD
+      POSTGRES_DB: $PSQL_NAME
