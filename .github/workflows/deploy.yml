@@ -1,0 +1,26 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ec2-3-15-23-158.us-east-2.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd codecrafters-backend
+            git pull
+            sudo docker-compose build
+            sudo docker-compose up -d
