@@ -14,7 +14,7 @@ app.use(cors());
 
 router.get('/', (ctx) => {
     ctx.status = 200;
-    ctx.body = 'Hello World';
+    ctx.body = 'Hello World / Github Actions';
 });
   
 // Use the router routes
