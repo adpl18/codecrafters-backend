@@ -1,5 +1,4 @@
-const { sequelize, Course, User } = require('../../models');
-
+/* eslint-disable no-undef */
 describe('Course Model', () => {
 //   beforeEach(async () => {
 //     await sequelize.sync({ force: true });
