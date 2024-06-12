@@ -114,10 +114,65 @@ async function deleteCourse(ctx) {
   }
 }
 
+//Nuevas funciones
+
+async function getCoursesByTeacher(ctx) {
+  const teacherId = parseInt(ctx.params.teacherId);
+  if (!teacherId || teacherId < 0) {
+      ctx.status = 400;
+      ctx.body = { error: 'Invalid teacher ID' };
+      return;
+  }
+
+  try {
+      const courses = await Course.findAll({
+          where: { userId: teacherId }
+      });
+
+      if (!courses.length) {
+          ctx.status = 404;
+          ctx.body = { error: 'No courses found for this teacher' };
+      } else {
+          ctx.status = 200;
+          ctx.body = { courses };
+      }
+  } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: 'Internal server error' };
+      console.error('Error fetching courses by teacher:', error);
+  }
+}
+
+async function updateCoursePrice(ctx) {
+  const courseId = parseInt(ctx.params.id);
+  const { newPrice } = ctx.request.body;
+
+  try {
+      const course = await Course.findByPk(courseId);
+      if (!course) {
+          ctx.status = 404;
+          ctx.body = { error: 'Course not found' };
+          return;
+      }
+
+      await course.update({ price: newPrice });
+      ctx.status = 200;
+      ctx.body = { course };
+  } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: 'Internal server error' };
+      console.error('Error updating course price:', error);
+  }
+}
+
+
+
 module.exports = {
   getCourses,
   getCourseById,
   createCourse,
   updateCourse,
   deleteCourse,
+  getCoursesByTeacher,
+  updateCoursePrice,
 };
