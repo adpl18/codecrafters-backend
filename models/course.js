@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     description: {
       type: DataTypes.STRING
     },
+    category: {
+      type: DataTypes.STRING
+    },
     userId: {
       type: DataTypes.INTEGER,
       references: {

@@ -37,15 +37,15 @@ async function getCourseById(ctx) {
 }
 
 async function createCourse(ctx) {
-  const { name, price, description, userId } = ctx.request.body;
-  if (!name || !price || !description || !userId) {
+  const { name, price, description, category, userId } = ctx.request.body;
+  if (!name || !price || !description || !category || !userId) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
     return;
   }
 
   try {
-    const course = await Course.create({ name, price, description, userId });
+    const course = await Course.create({ name, price, description, category, userId });
     ctx.status = 201;
     ctx.body = { course };
   } catch (error) {
@@ -63,8 +63,8 @@ async function updateCourse(ctx) {
     return;
   }
 
-  const { name, price, description, userId } = ctx.request.body;
-  if (!name || !price || !description || !userId) {
+  const { name, price, description, category, userId } = ctx.request.body;
+  if (!name || !price || !description || !category || !userId) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
     return;
@@ -78,7 +78,7 @@ async function updateCourse(ctx) {
       return;
     }
 
-    await course.update({ name, price, description, userId });
+    await course.update({ name, price, description, category, userId });
     ctx.status = 200;
     ctx.body = { course };
   } catch (error) {
