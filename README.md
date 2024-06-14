@@ -37,6 +37,12 @@ $ docker-compose run app npx sequelize-cli db:seed:all
 ```
 npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
 ```
+
+or simply
+
+```
+npx sequelize-cli migration:generate --name migration-name
+```
 6. Start app
 ```bash
 docker-compose up -d
