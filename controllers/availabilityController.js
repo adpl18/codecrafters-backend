@@ -1,4 +1,5 @@
 const { Availability } = require('../models');
+const { Sequelize } = require('sequelize');
 
 async function getAvailabilities(ctx) {
     try {
