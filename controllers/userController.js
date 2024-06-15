@@ -68,8 +68,8 @@ const updateUser = async (ctx) => {
     return;
   }
 
-  const { firstName, lastName, email, birthdate } = ctx.request.body;
-  if (!firstName || !lastName || !email || !birthdate) {
+  const { firstName, lastName, birthdate } = ctx.request.body;
+  if (!firstName || !lastName || !birthdate) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
     return;
@@ -83,7 +83,7 @@ const updateUser = async (ctx) => {
       return;
     }
 
-    await user.update({ firstName, lastName, email, birthdate });
+    await user.update({ firstName, lastName, birthdate });
     ctx.status = 200;
     ctx.body = { user };
   } catch (error) {
