@@ -18,7 +18,11 @@ const router = new Router(); // Create a router instance
 app.use(bodyParser());
 
 // Enable CORS middleware
-app.use(cors());
+app.use(cors({
+    origin: "*", // Ajusta según tus requerimientos de seguridad
+    methods: ["GET", "POST", "PUT", "DELETE"] // Asegúrate de que POST está incluido
+}));
+
 
 router.get('/users', userController.getUsers);
 router.get('/users/:id', userController.getUserById);
@@ -28,20 +32,39 @@ router.delete('/users/:id', userController.deleteUser);
 
 router.get('/courses', courseController.getCourses);
 router.get('/courses/:id', courseController.getCourseById);
+router.get('/courses/teacher/:teacherId', courseController.getCoursesByTeacher);
+
 router.post('/courses', courseController.createCourse);
 router.put('/courses/:id', courseController.updateCourse);
+router.put('/courses/:id/price', courseController.updateCoursePrice);
 router.delete('/courses/:id', courseController.deleteCourse);
+
 
 router.get('/availabilities', availabilityController.getAvailabilities);
 router.get('/availabilities/:id', availabilityController.getAvailabilityById);
+router.get('/availabilities/user/:userId', availabilityController.getAvailabilitiesByUser);
+
 router.post('/availabilities', availabilityController.createAvailability);
+router.post('/availabilities/daterange', availabilityController.getAvailabilitiesByDateRange);
+
+
+
 router.put('/availabilities/:id', availabilityController.updateAvailability);
+router.put('/availabilities/cancel/:id', availabilityController.cancelAvailability);
+
 router.delete('/availabilities/:id', availabilityController.deleteAvailability);
+
 
 router.get('/reservations', reservationController.getReservations);
 router.get('/reservations/:id', reservationController.getReservationById);
+router.get('/reservations/user/:userId', reservationController.getReservationsByUser);
+router.get('/reservations/course/:courseId', reservationController.getReservationsByCourse);
+router.get('/reservations/active', reservationController.getActiveReservations);
+router.get('/reservations/date/:date', reservationController.getReservationsByDate);
+
 router.post('/reservations', reservationController.createReservation);
 router.put('/reservations/:id', reservationController.updateReservation);
+router.put('/reservations/cancel/:id', reservationController.cancelReservation);
 router.delete('/reservations/:id', reservationController.deleteReservation);
 
 router.get('/reviews', reviewController.getReviews);
