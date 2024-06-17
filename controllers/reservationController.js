@@ -37,15 +37,15 @@ async function getReservationById(ctx) {
 }
 
 async function createReservation(ctx) {
-    const { courseId, userId, availabilityId, isCancelled } = ctx.request.body;
-    if (!courseId || !userId || !availabilityId || isCancelled === undefined) {
+    const { courseId, userId, availabilityId } = ctx.request.body;
+    if (!courseId || !userId || !availabilityId) {
       ctx.status = 400;
       ctx.body = { error: 'Missing required fields' };
       return;
     }
   
     try {
-      const reservation = await Reservation.create({ courseId, userId, availabilityId, isCancelled });
+      const reservation = await Reservation.create({ courseId, userId, availabilityId, isCancelled: false});
       ctx.status = 201;
       ctx.body = { reservation };
     } catch (error) {
@@ -64,7 +64,7 @@ async function updateReservation(ctx) {
     }
   
     const { courseId, userId, availabilityId, isCancelled } = ctx.request.body;
-    if (!courseId || !userId || !availabilityId || isCancelled === undefined) {
+    if (!courseId || !userId || !availabilityId || isCancelled) {
       ctx.status = 400;
       ctx.body = { error: 'Missing required fields' };
       return;
