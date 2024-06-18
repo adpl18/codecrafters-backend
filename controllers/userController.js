@@ -39,6 +39,31 @@ const getUserById = async (ctx) => {
   }
 };
 
+// Get a user by Email
+const getUserByEmail = async (ctx) => {
+  const email = ctx.params.email;
+  if (!email) {
+    ctx.status = 400;
+    ctx.body = { error: 'Invalid email' };
+    return;
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      ctx.status = 404;
+      ctx.body = { error: 'User not found' };
+    } else {
+      ctx.status = 200;
+      ctx.body = { user };
+    }
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal server error' };
+    console.error('Error fetching user by email:', error);
+  }
+};
+
 // Create a new user
 const createUser = async (ctx) => {
   const { firstName, lastName, email, birthdate } = ctx.request.body;
@@ -123,6 +148,7 @@ const deleteUser = async (ctx) => {
 module.exports = {
   getUsers,
   getUserById,
+  getUserByEmail,
   createUser,
   updateUser,
   deleteUser,

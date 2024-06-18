@@ -26,6 +26,7 @@ app.use(cors({
 
 router.get('/users', userController.getUsers);
 router.get('/users/:id', userController.getUserById);
+router.get('/users/email/:email', userController.getUserByEmail);
 router.post('/users', userController.createUser);
 router.put('/users/:id', userController.updateUser);
 router.delete('/users/:id', userController.deleteUser);
