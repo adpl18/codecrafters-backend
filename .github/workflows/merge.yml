@@ -23,11 +23,11 @@ jobs:
         run: make up  # Replace with your actual make command to start containers
 
       - name: Wait for services to be ready
-        run: sleep 30  # Adjust sleep time based on your service startup time
+        run: sleep 10  # Adjust sleep time based on your service startup time
 
       - name: set up database
         run: make create-db
-        
+
       - name: migrate db
         run: make migrate-db
 
@@ -35,6 +35,6 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm run test
+        run: make test
 
 
