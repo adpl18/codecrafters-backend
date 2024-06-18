@@ -1,16 +1,17 @@
-version: '3.8'
+version: '3'
 
 services:
   app:
     env_file: ./.env
+    container_name: $CONTAINER_NAME_APP
     build: .
     ports:
-      - "8000:8000" 
+      - "8000:8000"
     environment:
       POSTGRES_HOST: postgres:$PSQL_PASSWORD@postgres:5433
       PORT: $NODEJS_LOCAL_PORT
     depends_on:
-    - postgres
+      - postgres
 
   postgres:
     env_file: ./.env
@@ -22,3 +23,13 @@ services:
     environment:
       POSTGRES_PASSWORD: $PSQL_PASSWORD
       POSTGRES_DB: $PSQL_NAME
+      POSTGRES_DB_TEST: database_test
+  test:
+    env_file: ./.env
+    build: .
+    environment:
+      POSTGRES_HOST: postgres:$PSQL_PASSWORD@postgres:5433
+      PORT: $NODEJS_LOCAL_PORT
+      NODE_ENV: test
+    depends_on:
+      - postgres
