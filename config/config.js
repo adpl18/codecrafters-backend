@@ -9,11 +9,11 @@ module.exports = {
     dialect: process.env.DIALECT
   },
   test: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
-    host: '127.0.0.1',
-    dialect: 'mysql',
+    username: 'postgres',  // Adjust username if needed
+    password: process.env.PSQL_PASSWORD,
+    database: 'desarrollo',  // Specify a different database name for testing
+    host: 'postgres',  // Should match the service name in docker-compose.yml
+    dialect: 'postgres',
   },
   production: {
     username: process.env.USERNAME,

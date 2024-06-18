@@ -16,8 +16,25 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build Docker containers
+        run: make build  # Replace with your actual make command to build containers
+
+      - name: Start Docker containers
+        run: make up  # Replace with your actual make command to start containers
+
+      - name: Wait for services to be ready
+        run: sleep 10  # Adjust sleep time based on your service startup time
+
+      - name: set up database
+        run: make create-db
+
+      - name: migrate db
+        run: make migrate-db
+
       - name: Lint code
-        run: npm run lint  # Assuming you have a linting script in your package.json
+        run: npm run lint
 
       - name: Run tests
-        run: npm test  # Assuming you have a test script in your package.json
+        run: make test
+
+
