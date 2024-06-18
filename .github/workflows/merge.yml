@@ -9,17 +9,6 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: root # Use your PostgreSQL password secret
-          POSTGRES_DB: desarrollo  # Replace with your development database name
-          POSTGRES_DB_TEST: database_test  # Define environment variable for test database
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,13 +16,23 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build Docker containers
+        run: make build  # Replace with your actual make command to build containers
+
+      - name: Start Docker containers
+        run: make up  # Replace with your actual make command to start containers
+
+      - name: Wait for services to be ready
+        run: sleep 30  # Adjust sleep time based on your service startup time
+
       - name: Create test database
         run: |
-          docker exec -it postgres psql -U postgres -c 'CREATE DATABASE database_test;'
+          docker exec -it $(docker-compose ps -q postgres) psql -U postgres -c 'CREATE DATABASE database_test;'
 
       - name: Lint code
         run: npm run lint
 
       - name: Run tests
-        run: make test
+        run: npm run test
+
 
