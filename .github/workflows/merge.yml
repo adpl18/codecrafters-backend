@@ -13,7 +13,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}  # Use your PostgreSQL password secret
+          POSTGRES_PASSWORD: root # Use your PostgreSQL password secret
           POSTGRES_DB: desarrollo  # Replace with your development database name
           POSTGRES_DB_TEST: database_test  # Define environment variable for test database
         ports:
