@@ -11,7 +11,7 @@ module.exports = {
   test: {
     username: 'postgres',  // Adjust username if needed
     password: process.env.PSQL_PASSWORD,
-    database: 'database_test',  // Specify a different database name for testing
+    database: 'desarrollo',  // Specify a different database name for testing
     host: 'postgres',  // Should match the service name in docker-compose.yml
     dialect: 'postgres',
   },
