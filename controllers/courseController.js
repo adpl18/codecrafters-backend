@@ -26,7 +26,12 @@ async function getCourseById(ctx) {
   }
 
   try {
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findByPk(courseId, {
+      include: [{
+        model: User, // Assuming the User model is associated with Course
+        as: 'User'  // Alias for the association, change if different
+      }]
+    });
     if (!course) {
       ctx.status = 404;
       ctx.body = { error: 'Course not found' };
