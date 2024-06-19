@@ -1,8 +1,13 @@
-const { Course } = require('../models');
+const { Course, User } = require('../models');
 
 async function getCourses(ctx) {
   try {
-    const courses = await Course.findAll();
+    const courses = await Course.findAll({
+      include: [{
+        model: User, // Assuming the User model is associated with Course
+        as: 'User'  // Alias for the association, change if different
+      }]
+    });
     ctx.status = 200;
     ctx.body = { courses };
   } catch (error) {
@@ -21,7 +26,12 @@ async function getCourseById(ctx) {
   }
 
   try {
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findByPk(courseId, {
+      include: [{
+        model: User, // Assuming the User model is associated with Course
+        as: 'User'  // Alias for the association, change if different
+      }]
+    });
     if (!course) {
       ctx.status = 404;
       ctx.body = { error: 'Course not found' };
