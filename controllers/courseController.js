@@ -1,8 +1,13 @@
-const { Course } = require('../models');
+const { Course, User } = require('../models');
 
 async function getCourses(ctx) {
   try {
-    const courses = await Course.findAll();
+    const courses = await Course.findAll({
+      include: [{
+        model: User, // Assuming the User model is associated with Course
+        as: 'User'  // Alias for the association, change if different
+      }]
+    });
     ctx.status = 200;
     ctx.body = { courses };
   } catch (error) {
