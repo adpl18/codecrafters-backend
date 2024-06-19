@@ -51,7 +51,7 @@ router.post('/availabilities/daterange', availabilityController.getAvailabilitie
 
 
 router.put('/availabilities/:id', availabilityController.updateAvailability);
-router.put('/availabilities/cancel/:id', availabilityController.cancelAvailability);
+router.put('/availabilities/update-status/:id', availabilityController.updateAvailabilityStatus);
 
 router.delete('/availabilities/:id', availabilityController.deleteAvailability);
 

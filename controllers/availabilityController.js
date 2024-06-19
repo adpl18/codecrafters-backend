@@ -38,15 +38,15 @@ async function getAvailabilityById(ctx) {
 }
 
 async function createAvailability(ctx) {
-    const { date, startTime, endTime, isAvailable, userId } = ctx.request.body;
-    if (!date || !startTime || !endTime || !isAvailable || !userId) {
+    const { date, startTime, endTime, userId } = ctx.request.body;
+    if (!date || !startTime || !endTime || !userId) {
       ctx.status = 400;
       ctx.body = { error: 'Missing required fields' };
       return;
     }
   
     try {
-      const availability = await Availability.create({ date, startTime, endTime, isAvailable, userId });
+      const availability = await Availability.create({ date, startTime, endTime, isAvailable: true, userId });
       ctx.status = 201;
       ctx.body = { availability };
     } catch (error) {
@@ -177,31 +177,40 @@ async function getAvailabilitiesByDateRange(ctx) {
   }
 }
 
-async function cancelAvailability(ctx) {
-  const availabilityId = parseInt(ctx.params.id);
-  if (!availabilityId || availabilityId < 0) {
+async function updateAvailabilityStatus(ctx) {
+    const availabilityId = parseInt(ctx.params.id);
+    const { isAvailable } = ctx.request.body;
+  
+    if (!availabilityId || availabilityId < 0) {
       ctx.status = 400;
       ctx.body = { error: 'Invalid availability ID' };
       return;
-  }
-
-  try {
+    }
+  
+    if (typeof isAvailable !== 'boolean') {
+      ctx.status = 400;
+      ctx.body = { error: 'Invalid isAvailable value, it should be boolean' };
+      return;
+    }
+  
+    try {
       const availability = await Availability.findByPk(availabilityId);
       if (!availability) {
-          ctx.status = 404;
-          ctx.body = { error: 'Availability not found' };
-          return;
+        ctx.status = 404;
+        ctx.body = { error: 'Availability not found' };
+        return;
       }
-
-      await availability.update({ isAvailable: false });
+  
+      await availability.update({ isAvailable });
       ctx.status = 200;
-      ctx.body = { message: 'Availability successfully canceled' };
-  } catch (error) {
+      ctx.body = { message: `Availability successfully ${isAvailable ? 'uncanceled' : 'canceled'}` };
+    } catch (error) {
       ctx.status = 500;
       ctx.body = { error: 'Internal server error' };
-      console.error('Error canceling availability:', error);
+      console.error('Error updating availability status:', error);
+    }
   }
-}
+  
 
 
 
@@ -214,6 +223,6 @@ module.exports = {
   deleteAvailability,
   getAvailabilitiesByUser,
   getAvailabilitiesByDateRange,
-  cancelAvailability,
+  updateAvailabilityStatus,
 };
 
