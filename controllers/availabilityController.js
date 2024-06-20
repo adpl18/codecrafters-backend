@@ -1,4 +1,4 @@
-const { Availability } = require('../models');
+const { Availability, User } = require('../models');
 const { Sequelize } = require('sequelize');
 
 async function getAvailabilities(ctx) {
@@ -129,7 +129,10 @@ async function getAvailabilitiesByUser(ctx) {
   try {
       const availabilities = await Availability.findAll({
           where: { userId },
-          
+          include: [{
+            model: User,
+            as: 'User'
+          }]
       });
 
       if (!availabilities.length) {
