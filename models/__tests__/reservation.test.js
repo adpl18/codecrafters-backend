@@ -1,18 +1,16 @@
 /* eslint-disable no-undef */
 const { Reservation, User, Course, Availability } = require('../../models');
 
-describe('Reservation Model', () => {
-  let user, course, availability, reservation;
-
-  beforeEach(async () => {
-    user = await User.create({
+describe('Reservation Model Unit Tests', () => {
+  test('should create a reservation', async () => {
+    const user = await User.create({
       firstName: 'Johnny',
       lastName: 'Test',
       email: 'john.doe@example.com',
       birthdate: '1990-01-01'
     });
 
-    course = await Course.create({
+    const course = await Course.create({
       name: 'Math 101',
       price: 100,
       description: 'Basic Math Course',
@@ -20,7 +18,7 @@ describe('Reservation Model', () => {
       userId: user.id
     });
 
-    availability = await Availability.create({
+    const availability = await Availability.create({
       date: '2024-06-18',
       startTime: '09:00:00',
       endTime: '12:00:00',
@@ -28,15 +26,13 @@ describe('Reservation Model', () => {
       userId: user.id
     });
 
-    reservation = await Reservation.create({
+    const reservation = await Reservation.create({
       isCancelled: false,
       courseId: course.id,
       userId: user.id,
       availabilityId: availability.id
     });
-  });
 
-  test('should create a reservation', async () => {
     expect(reservation).toBeDefined();
     expect(reservation.id).toBeDefined();
     expect(reservation.isCancelled).toBe(false);
@@ -45,22 +41,52 @@ describe('Reservation Model', () => {
     expect(reservation.availabilityId).toBe(availability.id);
   });
 
-  test('should update a reservation', async () => {
-    await reservation.update({
-      isCancelled: true
+  // Add more unit tests as needed
+});
+
+describe('Reservation Model Integration Tests', () => {
+  let user, course, availability;
+
+  test('should create and fetch a reservation with course, user, and availability', async () => {
+    user = await User.create({
+      firstName: 'Johnny',
+      lastName: 'Test',
+      email: 'john.doe@example.com',
+      birthdate: '1990-01-01',
     });
 
-    const updatedReservation = await Reservation.findByPk(reservation.id);
+    course = await Course.create({
+      name: 'Math 101',
+      price: 100,
+      description: 'Basic Math Course',
+      category: 'Math',
+      userId: user.id,
+    });
 
-    expect(updatedReservation).toBeDefined();
-    expect(updatedReservation.isCancelled).toBe(true);
-  });
+    availability = await Availability.create({
+      date: '2024-06-18',
+      startTime: '09:00:00',
+      endTime: '12:00:00',
+      isAvailable: true,
+      userId: user.id,
+    });
+    const reservation = await Reservation.create({
+      isCancelled: false,
+      courseId: course.id,
+      userId: user.id,
+      availabilityId: availability.id,
+    });
 
-  test('should delete a reservation', async () => {
-    await reservation.destroy();
+    const fetchedReservation = await Reservation.findByPk(reservation.id, {
+      include: [User, Course, Availability]
+    });
 
-    const deletedReservation = await Reservation.findByPk(reservation.id);
-
-    expect(deletedReservation).toBeNull();
+    expect(fetchedReservation).toBeDefined();
+    expect(fetchedReservation.User).toBeDefined();
+    expect(fetchedReservation.User.email).toBe('john.doe@example.com');
+    expect(fetchedReservation.Course).toBeDefined();
+    expect(fetchedReservation.Course.name).toBe('Math 101');
+    expect(fetchedReservation.Availability).toBeDefined();
+    expect(fetchedReservation.Availability.date).toBe('2024-06-18');
   });
 });

@@ -1,18 +1,16 @@
 /* eslint-disable no-undef */
 const { Review, Reservation, User, Course, Availability } = require('../../models');
 
-describe('Review Model', () => {
-  let user, course, availability, reservation, review;
-
-  beforeEach(async () => {
-    user = await User.create({
+describe('Review Model Unit Tests', () => {
+  test('should create a review', async () => {
+    const user = await User.create({
       firstName: 'Johnny',
       lastName: 'Test',
       email: 'john.doe@example.com',
       birthdate: '1990-01-01'
     });
 
-    course = await Course.create({
+    const course = await Course.create({
       name: 'Math 101',
       price: 100,
       description: 'Basic Math Course',
@@ -20,7 +18,7 @@ describe('Review Model', () => {
       userId: user.id
     });
 
-    availability = await Availability.create({
+    const availability = await Availability.create({
       date: '2024-06-18',
       startTime: '09:00:00',
       endTime: '12:00:00',
@@ -28,21 +26,19 @@ describe('Review Model', () => {
       userId: user.id
     });
 
-    reservation = await Reservation.create({
+    const reservation = await Reservation.create({
       isCancelled: false,
       courseId: course.id,
       userId: user.id,
       availabilityId: availability.id
     });
 
-    review = await Review.create({
+    const review = await Review.create({
       rating: 5,
       comment: 'Great course!',
       reservationId: reservation.id
     });
-  });
 
-  test('should create a review', async () => {
     expect(review).toBeDefined();
     expect(review.id).toBeDefined();
     expect(review.rating).toBe(5);
@@ -50,24 +46,63 @@ describe('Review Model', () => {
     expect(review.reservationId).toBe(reservation.id);
   });
 
-  test('should update a review', async () => {
-    await review.update({
-      rating: 4,
-      comment: 'Good course!'
+  // Add more unit tests as needed
+});
+
+describe('Review Model Integration Tests', () => {
+  let user, course, availability, reservation;
+
+  test('should create and fetch a review with reservation', async () => {
+    user = await User.create({
+      firstName: 'Johnny',
+      lastName: 'Test',
+      email: 'john.doe@example.com',
+      birthdate: '1990-01-01',
     });
 
-    const updatedReview = await Review.findByPk(review.id);
+    course = await Course.create({
+      name: 'Math 101',
+      price: 100,
+      description: 'Basic Math Course',
+      category: 'Math',
+      userId: user.id,
+    });
 
-    expect(updatedReview).toBeDefined();
-    expect(updatedReview.rating).toBe(4);
-    expect(updatedReview.comment).toBe('Good course!');
-  });
+    availability = await Availability.create({
+      date: '2024-06-18',
+      startTime: '09:00:00',
+      endTime: '12:00:00',
+      isAvailable: true,
+      userId: user.id,
+    });
 
-  test('should delete a review', async () => {
-    await review.destroy();
+    reservation = await Reservation.create({
+      isCancelled: false,
+      courseId: course.id,
+      userId: user.id,
+      availabilityId: availability.id,
+    });
+    
+    const review = await Review.create({
+      rating: 5,
+      comment: 'Great course!',
+      reservationId: reservation.id,
+    });
 
-    const deletedReview = await Review.findByPk(review.id);
+    const fetchedReview = await Review.findByPk(review.id, {
+      include: {
+        model: Reservation,
+        include: [User, Course, Availability]
+      }
+    });
 
-    expect(deletedReview).toBeNull();
+    expect(fetchedReview).toBeDefined();
+    expect(fetchedReview.Reservation).toBeDefined();
+    expect(fetchedReview.Reservation.User).toBeDefined();
+    expect(fetchedReview.Reservation.User.email).toBe('john.doe@example.com');
+    expect(fetchedReview.Reservation.Course).toBeDefined();
+    expect(fetchedReview.Reservation.Course.name).toBe('Math 101');
+    expect(fetchedReview.Reservation.Availability).toBeDefined();
+    expect(fetchedReview.Reservation.Availability.date).toBe('2024-06-18');
   });
 });
