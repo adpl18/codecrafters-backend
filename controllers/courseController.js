@@ -73,8 +73,8 @@ async function updateCourse(ctx) {
     return;
   }
 
-  const { name, price, description, category, userId } = ctx.request.body;
-  if (!name || !price || !description || !category || !userId) {
+  const { name, price, description, category} = ctx.request.body;
+  if (!name || !price || !description || !category) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
     return;
@@ -88,7 +88,7 @@ async function updateCourse(ctx) {
       return;
     }
 
-    await course.update({ name, price, description, category, userId });
+    await course.update({ name, price, description, category});
     ctx.status = 200;
     ctx.body = { course };
   } catch (error) {

@@ -64,8 +64,8 @@ async function updateAvailability(ctx) {
       return;
     }
   
-    const { date, startTime, endTime, isAvailable, userId } = ctx.request.body;
-    if (!date || !startTime || !endTime || !isAvailable || !userId) {
+    const { date, startTime, endTime } = ctx.request.body;
+    if (!date || !startTime || !endTime) {
       ctx.status = 400;
       ctx.body = { error: 'Missing required fields' };
       return;
@@ -79,7 +79,7 @@ async function updateAvailability(ctx) {
         return;
       }
   
-      await availability.update({ date, startTime, endTime, isAvailable, userId });
+      await availability.update({ date, startTime, endTime});
       ctx.status = 200;
       ctx.body = { availability };
     } catch (error) {

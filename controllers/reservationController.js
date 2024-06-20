@@ -53,41 +53,7 @@ async function createReservation(ctx) {
       ctx.body = { error: 'Internal server error' };
       console.error('Error creating reservation:', error);
     }
-}
-  
-async function updateReservation(ctx) {
-    const reservationId = parseInt(ctx.params.id);
-    if (!reservationId || reservationId < 0) {
-      ctx.status = 400;
-      ctx.body = { error: 'Invalid reservation ID' };
-      return;
-    }
-  
-    const { courseId, userId, availabilityId, isCancelled } = ctx.request.body;
-    if (!courseId || !userId || !availabilityId || isCancelled) {
-      ctx.status = 400;
-      ctx.body = { error: 'Missing required fields' };
-      return;
-    }
-  
-    try {
-      const reservation = await Reservation.findByPk(reservationId);
-      if (!reservation) {
-        ctx.status = 404;
-        ctx.body = { error: 'Reservation not found' };
-        return;
-      }
-  
-      await reservation.update({ courseId, userId, availabilityId, isCancelled });
-      ctx.status = 200;
-      ctx.body = { reservation };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = { error: 'Internal server error' };
-      console.error('Error updating reservation:', error);
-    }
-}
-  
+} 
 
 async function deleteReservation(ctx) {
   const reservationId = parseInt(ctx.params.id);
@@ -246,7 +212,6 @@ module.exports = {
   getReservations,
   getReservationById,
   createReservation,
-  updateReservation,
   deleteReservation,
   getReservationsByUser,
   getReservationsByCourse,
