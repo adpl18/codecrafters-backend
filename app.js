@@ -64,7 +64,6 @@ router.get('/reservations/active', reservationController.getActiveReservations);
 router.get('/reservations/date/:date', reservationController.getReservationsByDate);
 
 router.post('/reservations', reservationController.createReservation);
-router.put('/reservations/:id', reservationController.updateReservation);
 router.put('/reservations/cancel/:id', reservationController.cancelReservation);
 router.delete('/reservations/:id', reservationController.deleteReservation);
 
