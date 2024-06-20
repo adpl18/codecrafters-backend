@@ -1,4 +1,4 @@
-const { Reservation } = require('../models');
+const { Reservation, Course, Availability, User } = require('../models');
 
 async function getReservations(ctx) {
   try {
@@ -93,7 +93,19 @@ async function getReservationsByUser(ctx) {
 
   try {
       const reservations = await Reservation.findAll({
-          where: { userId: userId }
+          where: { userId: userId },
+          include: [{
+              model: Course,
+              as: 'course',
+          },
+          {
+              model: User,
+              as: 'user'
+          },
+          {
+              model: Availability,
+              as: 'availability'
+          }]
       });
 
       if (reservations.length === 0) {
