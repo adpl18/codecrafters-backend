@@ -20,6 +20,7 @@ describe('Course Model', () => {
       userId: user.id
     });
   });
+  
 
   test('should create a course', async () => {
     expect(course).toBeDefined();
