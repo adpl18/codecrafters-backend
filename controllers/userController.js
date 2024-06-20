@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Reservation, Availability, Course } = require('../models');
 
 // Get all users
 const getUsers = async (ctx) => {
@@ -24,7 +24,26 @@ const getUserById = async (ctx) => {
   }
 
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      include: [{
+        model: Reservation,
+        as: 'reservations',
+        include: [
+          {
+            model: User,
+            as: 'User'
+          },
+          {
+            model: Availability,
+            as: 'Availability'
+          },
+          {
+            model: Course,
+            as: 'Course'
+          }
+        ]
+      }]
+    });
     if (!user) {
       ctx.status = 404;
       ctx.body = { error: 'User not found' };
