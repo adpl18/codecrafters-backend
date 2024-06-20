@@ -2,7 +2,22 @@ const { Reservation, Course, Availability, User } = require('../models');
 
 async function getReservations(ctx) {
   try {
-    const reservations = await Reservation.findAll();
+    const reservations = await Reservation.findAll({
+      include: [
+        {
+          model: Course,
+          as: 'Course',
+        },
+        {
+          model: User,
+          as: 'User'
+        },
+        {
+          model: Availability,
+          as: 'Availability'
+        }
+      ]
+    });
     ctx.status = 200;
     ctx.body = { reservations };
   } catch (error) {
@@ -93,19 +108,21 @@ async function getReservationsByUser(ctx) {
 
   try {
       const reservations = await Reservation.findAll({
-          where: { userId: userId },
-          include: [{
-              model: Course,
-              as: 'course',
+        where: { userId: userId },
+        include: [
+          {
+            model: Course,
+            as: 'Course',
           },
           {
-              model: User,
-              as: 'user'
+            model: User,
+            as: 'User'
           },
           {
-              model: Availability,
-              as: 'availability'
-          }]
+            model: Availability,
+            as: 'Availability'
+          }
+        ]
       });
 
       if (reservations.length === 0) {
