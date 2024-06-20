@@ -1,17 +1,18 @@
 /* eslint-disable no-undef */
-const {Reservation, User, Course, Availability } = require('../../models');
+const { Reservation, User, Course, Availability } = require('../../models');
 
 describe('Reservation Model', () => {
+  let user, course, availability, reservation;
 
-  test('should create a reservation', async () => {
-    const user = await User.create({
+  beforeEach(async () => {
+    user = await User.create({
       firstName: 'Johnny',
       lastName: 'Test',
       email: 'john.doe@example.com',
       birthdate: '1990-01-01'
     });
 
-    const course = await Course.create({
+    course = await Course.create({
       name: 'Math 101',
       price: 100,
       description: 'Basic Math Course',
@@ -19,7 +20,7 @@ describe('Reservation Model', () => {
       userId: user.id
     });
 
-    const availability = await Availability.create({
+    availability = await Availability.create({
       date: '2024-06-18',
       startTime: '09:00:00',
       endTime: '12:00:00',
@@ -27,13 +28,15 @@ describe('Reservation Model', () => {
       userId: user.id
     });
 
-    const reservation = await Reservation.create({
+    reservation = await Reservation.create({
       isCancelled: false,
       courseId: course.id,
       userId: user.id,
       availabilityId: availability.id
     });
+  });
 
+  test('should create a reservation', async () => {
     expect(reservation).toBeDefined();
     expect(reservation.id).toBeDefined();
     expect(reservation.isCancelled).toBe(false);
@@ -42,5 +45,22 @@ describe('Reservation Model', () => {
     expect(reservation.availabilityId).toBe(availability.id);
   });
 
-  // Add more tests as needed
+  test('should update a reservation', async () => {
+    await reservation.update({
+      isCancelled: true
+    });
+
+    const updatedReservation = await Reservation.findByPk(reservation.id);
+
+    expect(updatedReservation).toBeDefined();
+    expect(updatedReservation.isCancelled).toBe(true);
+  });
+
+  test('should delete a reservation', async () => {
+    await reservation.destroy();
+
+    const deletedReservation = await Reservation.findByPk(reservation.id);
+
+    expect(deletedReservation).toBeNull();
+  });
 });
