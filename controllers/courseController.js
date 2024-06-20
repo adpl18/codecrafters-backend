@@ -1,4 +1,4 @@
-const { Course, User } = require('../models');
+const { Course, User, Reservation, Availability } = require('../models');
 
 async function getCourses(ctx) {
   try {
@@ -136,7 +136,21 @@ async function getCoursesByTeacher(ctx) {
 
   try {
       const courses = await Course.findAll({
-          where: { userId: teacherId }
+          where: { userId: teacherId },
+          include: [{
+            model: Reservation,
+            as: 'reservations',
+            include: [
+              {
+                model: User,
+                as: 'User'
+              },
+              {
+                model: Availability,
+                as: 'Availability'
+              }
+            ]
+          }]
       });
 
       if (!courses.length) {
