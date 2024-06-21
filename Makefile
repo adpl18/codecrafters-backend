@@ -18,3 +18,9 @@ drop-db:
 
 make test:
 	docker-compose run --rm test npm run test
+
+make test-coverage:
+	docker-compose run --rm test npm run test -- --coverage
+
+make test-verbose:
+	docker-compose run --rm test npm run test -- --verbose

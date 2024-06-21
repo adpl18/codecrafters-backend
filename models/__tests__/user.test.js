@@ -1,14 +1,7 @@
 /* eslint-disable no-undef */
-const { sequelize, User } = require('../../models');
+const { User } = require('../../models');
 
 describe('User Model', () => {
-  beforeEach(async () => {
-    await sequelize.sync({ force: true });
-  });
-
-  afterAll(async () => {
-    await sequelize.close();
-  });
 
   test('should create a user', async () => {
     const user = await User.create({
