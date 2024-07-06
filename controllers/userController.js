@@ -84,11 +84,33 @@ const getUserByEmail = async (ctx) => {
 };
 
 // Create a new user
+
+// Helper function to calculate age
+const calculateAge = (birthdate) => {
+  const birthDate = new Date(birthdate);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+// Create a new user
 const createUser = async (ctx) => {
   const { firstName, lastName, email, birthdate } = ctx.request.body;
   if (!firstName || !lastName || !email || !birthdate) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
+    return;
+  }
+
+  // Validate age
+  if (calculateAge(birthdate) < 18) {
+    ctx.status = 400;
+    ctx.body = { error: 'You must be at least 18 years old to sign up.' };
     return;
   }
 
