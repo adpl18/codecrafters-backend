@@ -3,14 +3,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('Reservation', 'isReviewed', {
+    await queryInterface.addColumn('Reservations', 'isReviewed', {
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Reservation', 'isReviewed');
+  async down (queryInterface) {
+    await queryInterface.removeColumn('Reservations', 'isReviewed');
   }
 };
