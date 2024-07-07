@@ -60,7 +60,7 @@ async function createReservation(ctx) {
     }
   
     try {
-      const reservation = await Reservation.create({ courseId, userId, availabilityId, isCancelled: false});
+      const reservation = await Reservation.create({ courseId, userId, availabilityId, isCancelled: false, isReviewed: false});
       ctx.status = 201;
       ctx.body = { reservation };
     } catch (error) {
