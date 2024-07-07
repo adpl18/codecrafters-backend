@@ -14,6 +14,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false
       },
+      isReviewed: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       courseId: {
         type: Sequelize.INTEGER,
         references: {

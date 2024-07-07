@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false
     },
+    isReviewed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     courseId: {
       type: DataTypes.INTEGER,
       references: {
