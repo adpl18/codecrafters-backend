@@ -192,6 +192,32 @@ async function cancelReservation(ctx) {
   }
 }
 
+async function reviewReservation(ctx) {
+  const reservationId = parseInt(ctx.params.id);
+  if (!reservationId || reservationId < 0) {
+      ctx.status = 400;
+      ctx.body = { error: 'Invalid reservation ID' };
+      return;
+  }
+
+  try {
+      const reservation = await Reservation.findByPk(reservationId);
+      if (!reservation) {
+          ctx.status = 404;
+          ctx.body = { error: 'Reservation not found' };
+          return;
+      }
+
+      await reservation.update({ isReviewed: true });
+      ctx.status = 200;
+      ctx.body = { message: 'Reservation reviewed successfully', reservation };
+  } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: 'Internal server error' };
+      console.error('Error reviewing reservation:', error);
+  }
+}
+
 async function getActiveReservations(ctx) {
   try {
       const activeReservations = await Reservation.findAll({
@@ -245,6 +271,7 @@ module.exports = {
   getReservationsByUser,
   getReservationsByCourse,
   cancelReservation,
+  reviewReservation,
   getActiveReservations,
   getReservationsByDate,
 };

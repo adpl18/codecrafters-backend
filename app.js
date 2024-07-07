@@ -65,6 +65,7 @@ router.get('/reservations/date/:date', reservationController.getReservationsByDa
 
 router.post('/reservations', reservationController.createReservation);
 router.put('/reservations/cancel/:id', reservationController.cancelReservation);
+router.put('/reservations/review/:id', reservationController.reviewReservation);
 router.delete('/reservations/:id', reservationController.deleteReservation);
 
 router.get('/reviews', reviewController.getReviews);
