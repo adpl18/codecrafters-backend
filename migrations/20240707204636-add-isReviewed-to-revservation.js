@@ -11,6 +11,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Reservation', 'isReviewed');
+    await queryInterface.removeColumn('Reservations', 'isReviewed');
   }
 };
