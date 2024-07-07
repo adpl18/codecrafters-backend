@@ -1,10 +1,22 @@
 const { User, Reservation, Availability, Course } = require('../models');
 
+// Helper function to calculate age
+const calculateAge = (birthdate) => {
+  const birthDate = new Date(birthdate);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
 // Get all users
 const getUsers = async (ctx) => {
   try {
     const users = await User.findAll();
-    // Send response
     ctx.status = 200;
     ctx.body = { users };
   } catch (error) {
@@ -17,7 +29,7 @@ const getUsers = async (ctx) => {
 // Get a user by ID
 const getUserById = async (ctx) => {
   const userId = parseInt(ctx.params.id);
-  if (!userId || userId < 0) {
+  if (isNaN(userId) || userId < 0) {
     ctx.status = 400;
     ctx.body = { error: 'Invalid user ID' };
     return;
@@ -61,7 +73,8 @@ const getUserById = async (ctx) => {
 // Get a user by Email
 const getUserByEmail = async (ctx) => {
   const email = ctx.params.email;
-  if (!email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
     ctx.status = 400;
     ctx.body = { error: 'Invalid email' };
     return;
@@ -84,21 +97,6 @@ const getUserByEmail = async (ctx) => {
 };
 
 // Create a new user
-
-// Helper function to calculate age
-const calculateAge = (birthdate) => {
-  const birthDate = new Date(birthdate);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDifference = today.getMonth() - birthDate.getMonth();
-
-  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-};
-
-// Create a new user
 const createUser = async (ctx) => {
   const { firstName, lastName, email, birthdate } = ctx.request.body;
   if (!firstName || !lastName || !email || !birthdate) {
@@ -107,7 +105,12 @@ const createUser = async (ctx) => {
     return;
   }
 
-  // Validate age
+  if (isNaN(Date.parse(birthdate))) {
+    ctx.status = 400;
+    ctx.body = { error: 'Invalid birthdate' };
+    return;
+  }
+
   if (calculateAge(birthdate) < 18) {
     ctx.status = 400;
     ctx.body = { error: 'You must be at least 18 years old to sign up.' };
@@ -128,7 +131,7 @@ const createUser = async (ctx) => {
 // Update an existing user
 const updateUser = async (ctx) => {
   const userId = parseInt(ctx.params.id);
-  if (!userId || userId < 0) {
+  if (isNaN(userId) || userId < 0) {
     ctx.status = 400;
     ctx.body = { error: 'Invalid user ID' };
     return;
@@ -138,6 +141,12 @@ const updateUser = async (ctx) => {
   if (!firstName || !lastName || !birthdate) {
     ctx.status = 400;
     ctx.body = { error: 'Missing required fields' };
+    return;
+  }
+
+  if (isNaN(Date.parse(birthdate))) {
+    ctx.status = 400;
+    ctx.body = { error: 'Invalid birthdate' };
     return;
   }
 
@@ -162,7 +171,7 @@ const updateUser = async (ctx) => {
 // Delete a user
 const deleteUser = async (ctx) => {
   const userId = parseInt(ctx.params.id);
-  if (!userId || userId < 0) {
+  if (isNaN(userId) || userId < 0) {
     ctx.status = 400;
     ctx.body = { error: 'Invalid user ID' };
     return;
