@@ -33,6 +33,7 @@ router.delete('/users/:id', userController.deleteUser);
 
 router.get('/courses', courseController.getCourses);
 router.get('/courses/:id', courseController.getCourseById);
+router.get('/courses/avg-rating/:id', courseController.getAverageRatingForCourse);
 router.get('/courses/teacher/:teacherId', courseController.getCoursesByTeacher);
 
 router.post('/courses', courseController.createCourse);
