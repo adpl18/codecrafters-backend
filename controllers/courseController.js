@@ -176,6 +176,10 @@ async function getAverageRatingForCourse(ctx) {
 }
   try {
     const reservations = await Reservation.findAll({ where: { courseId } });
+    if (reservations.length === 0) {
+      ctx.body = { averageRating: -1 };
+      return;
+    }
     const reviewedReservations = reservations.filter(reservation => reservation.isReviewed);
     const reviewedReservationIds = reviewedReservations.map(reservation => reservation.id);
     const reviews = await Review.findAll({ where: { reservationId: reviewedReservationIds } });
