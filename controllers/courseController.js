@@ -180,7 +180,36 @@ async function getAverageRatingForCourse(ctx) {
     const reviewedReservationIds = reviewedReservations.map(reservation => reservation.id);
     const reviews = await Review.findAll({ where: { reservationId: reviewedReservationIds } });
     if (reviews.length === 0) {
-      return -1;
+      async function getAverageRatingForCourse(ctx) {
+  const courseId = parseInt(ctx.params.id);
+  if (!courseId || courseId < 0) {
+    ctx.status = 400;
+    ctx.body = { error: 'Invalid course ID' };
+    return;
+}
+  try {
+    const reservations = await Reservation.findAll({ where: { courseId } });
+    const reviewedReservations = reservations.filter(reservation => reservation.isReviewed);
+    const reviewedReservationIds = reviewedReservations.map(reservation => reservation.id);
+    const reviews = await Review.findAll({ where: { reservationId: reviewedReservationIds } });
+    if (reviews.length === 0) {
+      ctx.body = { averageRating: null };
+      return;
+    }
+    
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const averageRating = totalRating / reviews.length;
+
+    const roundedAverageRating = Math.round(averageRating * 10) / 10;
+
+    ctx.body = { averageRating: roundedAverageRating };
+  } catch (error) {
+    console.error('Error calculating average rating:', error);
+    ctx.status = 500;
+    ctx.body = { error: 'Error calculating average rating' };
+  }
+
+}
     }
     
     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
