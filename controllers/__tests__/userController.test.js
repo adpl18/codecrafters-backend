@@ -2,14 +2,12 @@ const request = require('supertest');
 const app = require('../../app'); // Ajusta la ruta según sea necesario
 const { sequelize, User } = require('../../models'); // Asegúrate de que la ruta sea correcta
 
-let server;
 let testUser;
+let server;
+let port;
 
 beforeAll(async () => {
-  server = app.listen(); // Inicia el servidor antes de los tests
-
   // Sincroniza el modelo con la base de datos
-  await sequelize.sync({ force: true });
 
   // Crea un usuario de prueba
   testUser = await User.create({
@@ -18,17 +16,26 @@ beforeAll(async () => {
     email: 'test.user@example.com',
     birthdate: '2000-01-01'
   });
+
+  if (server) {
+    server.close();
+  };
+
+  port = Math.floor(Math.random() * 40000) + 10000; // Puerto aleatorio entre 10000 y 50000
+  server = app.listen(port, () => {
+    console.log(`Test server running on port ${port}`);
+  });
 });
 
 afterAll(async () => {
   // Elimina el usuario de prueba
-  await User.destroy({ where: { id: testUser.id } });
+  if (testUser) {
+    await User.destroy({ where: { id: testUser.id } });
+  }
 
   // Cierra el servidor después de los tests
-  server.close(async () => {
-    // Cierra la conexión de la base de datos
-    await sequelize.close();
-  });
+  await sequelize.close();
+  server.close();
 });
 
 describe('Koa App Endpoints', () => {
