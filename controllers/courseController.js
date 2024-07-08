@@ -180,7 +180,8 @@ async function getAverageRatingForCourse(ctx) {
     const reviewedReservationIds = reviewedReservations.map(reservation => reservation.id);
     const reviews = await Review.findAll({ where: { reservationId: reviewedReservationIds } });
     if (reviews.length === 0) {
-      return -1;
+      ctx.body = { averageRating: null };
+      return;
     }
     
     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
@@ -188,10 +189,11 @@ async function getAverageRatingForCourse(ctx) {
 
     const roundedAverageRating = Math.round(averageRating * 10) / 10;
 
-    return roundedAverageRating;
+    ctx.body = { averageRating: roundedAverageRating };
   } catch (error) {
     console.error('Error calculating average rating:', error);
-    throw error;
+    ctx.status = 500;
+    ctx.body = { error: 'Error calculating average rating' };
   }
 }
 
